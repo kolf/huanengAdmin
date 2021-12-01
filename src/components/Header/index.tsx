@@ -5,13 +5,12 @@
 // ==================
 import React, { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { Layout, Tooltip, Menu, Dropdown } from "antd";
+import { Layout, Tooltip, Menu, Dropdown, Avatar } from "antd";
 import {
   MenuFoldOutlined,
   FullscreenOutlined,
   FullscreenExitOutlined,
-  GithubOutlined,
-  ChromeOutlined,
+  UserOutlined,
   LogoutOutlined,
   SmileOutlined,
 } from "@ant-design/icons";
@@ -100,7 +99,7 @@ export default function HeaderCom(props: Props): JSX.Element {
           onClick={() => props.onToggle()}
         />
       </Tooltip>
-      <div className="rightBox">
+      <div className="header-right">
         <Tooltip placement="bottom" title={fullScreen ? "退出全屏" : "全屏"}>
           <div className="full all_center">
             {fullScreen ? (
@@ -119,28 +118,7 @@ export default function HeaderCom(props: Props): JSX.Element {
         {u ? (
           <Dropdown
             overlay={
-              <Menu className="menu" selectedKeys={[]} onClick={onMenuClick}>
-                <Menu.Item>
-                  <a
-                    href="https://blog.isluo.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <ChromeOutlined />
-                    blog.isluo.com
-                  </a>
-                </Menu.Item>
-                <Menu.Item>
-                  <a
-                    href="https://github.com/javaLuo/react-admin"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <GithubOutlined />
-                    GitHub
-                  </a>
-                </Menu.Item>
-                <Menu.Divider />
+              <Menu className="header-menu" onClick={onMenuClick}>
                 <Menu.Item key="logout">
                   <LogoutOutlined />
                   退出登录
@@ -149,9 +127,9 @@ export default function HeaderCom(props: Props): JSX.Element {
             }
             placement="bottomRight"
           >
-            <div className="userhead all_center">
-              <SmileOutlined />
-              <span className="username">{u.username}</span>
+            <div className="header-user all_center">
+              <Avatar size="large" icon={<UserOutlined />} />
+              <span style={{marginLeft:6}}>{u.username}</span>
             </div>
           </Dropdown>
         ) : (

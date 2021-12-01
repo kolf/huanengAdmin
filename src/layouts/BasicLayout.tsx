@@ -19,9 +19,9 @@ import "./BasicLayout.less";
 // ==================
 // 组件
 // ==================
-import Header from "@/components/Header";
-import MenuCom from "@/components/Menu";
-import Footer from "@/components/Footer";
+import AppHeader from "@/components/Header";
+import AppMenu from "@/components/Menu";
+import AppFooter from "@/components/Footer";
 import Loading from "@/components/Loading";
 import ErrorBoundary from "@/components/ErrorBoundary";
 
@@ -116,7 +116,7 @@ function BasicLayoutCom(props: Props): JSX.Element {
 
   return (
     <Layout className="page-basic" hasSider>
-      <MenuCom
+      <AppMenu
         data={userinfo.menus}
         collapsed={collapsed}
         location={props.location}
@@ -124,7 +124,7 @@ function BasicLayoutCom(props: Props): JSX.Element {
       />
 
       <Layout>
-        <Header
+        <AppHeader
           collapsed={collapsed}
           userinfo={userinfo}
           onToggle={() => setCollapsed(!collapsed)}
@@ -174,7 +174,7 @@ function BasicLayoutCom(props: Props): JSX.Element {
             </CacheSwitch>
           </ErrorBoundary>
         </Content>
-        <Footer />
+        <AppFooter />
       </Layout>
     </Layout>
   );

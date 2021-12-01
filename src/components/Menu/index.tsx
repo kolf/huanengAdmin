@@ -122,12 +122,12 @@ export default function MenuCom(props: Props): JSX.Element {
   return (
     <Sider
       width={200}
-      className="sider"
+      className="menu-root"
       trigger={null}
       collapsible
       collapsed={props.collapsed}
     >
-      <div className={props.collapsed ? "menuLogo hide" : "menuLogo"}>
+      <div className={props.collapsed ? "menu-brand hide" : "menu-brand"}>
         <Link to="/">
           <img src={logoUrl} />
           <div>

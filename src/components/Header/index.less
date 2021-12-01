@@ -19,22 +19,24 @@
       background-color: @backColor;
     }
   }
-  .rightBox {
+  &-right {
     flex: auto;
     display: flex;
     justify-content: flex-end;
-    .userhead {
-      padding: 0 20px;
-      margin-right: 4px;
-      cursor: pointer;
-      font-size: 20px;
-      .username {
-        font-size: 14px;
-        margin-left: 4px;
-      }
-      &:hover {
-        background-color: @backColor;
-      }
+  }
+  &-menu {
+    .anticon {
+      margin-right: 8px;
+    }
+    .ant-dropdown-menu-item {
+      width: 160px;
+    }
+  }
+  &-user {
+    padding: 0 20px;
+    cursor: pointer;
+    &:hover {
+      background-color: @backColor;
     }
   }
   .full {
@@ -61,14 +63,7 @@
     }
   }
 }
-.menu {
-  .anticon {
-    margin-right: 8px;
-  }
-  .ant-dropdown-menu-item {
-    width: 160px;
-  }
-}
+
 .headerPopover {
   .ant-popover-inner-content {
     padding: 0;
