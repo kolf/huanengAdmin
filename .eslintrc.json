@@ -18,7 +18,6 @@
     "no-unmodified-loop-condition": "error",
     "no-with": "error",
     "no-catch-shadow": "error",
-
     "@typescript-eslint/camelcase": "off",
     "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/no-var-requires": "off",

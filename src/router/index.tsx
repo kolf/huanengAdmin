@@ -6,8 +6,8 @@
 import React, { useEffect, useCallback } from "react";
 import { Router, Route, Switch, Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-// import {createBrowserHistory as createHistory} from "history"; // URL模式的history
-import { createHashHistory as createHistory } from "history"; // 锚点模式的history
+import {createBrowserHistory as createHistory} from "history"; // URL模式的history
+// import { createHashHistory as createHistory } from "history"; // 锚点模式的history
 import { message } from "antd";
 
 // ==================

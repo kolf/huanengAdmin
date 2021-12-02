@@ -12,7 +12,6 @@ import {
   FullscreenExitOutlined,
   UserOutlined,
   LogoutOutlined,
-  SmileOutlined,
 } from "@ant-design/icons";
 
 const { Header } = Layout;
@@ -129,7 +128,7 @@ export default function HeaderCom(props: Props): JSX.Element {
           >
             <div className="header-user all_center">
               <Avatar size="large" icon={<UserOutlined />} />
-              <span style={{marginLeft:6}}>{u.username}</span>
+              <span style={{ marginLeft: 6 }}>{u.username}</span>
             </div>
           </Dropdown>
         ) : (

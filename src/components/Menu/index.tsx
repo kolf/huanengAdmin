@@ -16,7 +16,6 @@ const { SubMenu, Item } = MenuAntd;
 // ==================
 import "./index.less";
 import logoUrl from "@/assets/logo.png";
-import logoNameUrl from '@/assets/logo-name.png'
 import Icon from "@/components/Icon";
 
 // ==================
@@ -131,8 +130,8 @@ export default function MenuCom(props: Props): JSX.Element {
         <Link to="/">
           <img src={logoUrl} />
           <div>
-          中国华能
-          <span>CHINA HUANENG</span>
+            中国华能
+            <span>CHINA HUANENG</span>
           </div>
         </Link>
       </div>

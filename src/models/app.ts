@@ -3,9 +3,9 @@
  * 在src/store/index.js 中被挂载到store上，命名为 app
  * **/
 
-import axios from "@/util/axios"; // 自己写的工具函数，封装了请求数据的通用接口
-import { message } from "antd";
-import { Dispatch, RootState } from "@/store";
+import axios from '@/util/axios'; // 自己写的工具函数，封装了请求数据的通用接口
+import { message } from 'antd';
+import { Dispatch, RootState } from '@/store';
 import {
   Menu,
   Role,
@@ -14,7 +14,7 @@ import {
   UserInfo,
   AppState,
   Res,
-} from "./index.type";
+} from './index.type';
 
 const defaultState: AppState = {
   userinfo: {
@@ -50,14 +50,22 @@ export default {
   effects: (dispatch: Dispatch) => ({
     /**
      * 登录
-     * @param { username, password } params
      * */
-    async onLogin(params: { username: string; password: string }) {
+    async onLogin(params: {
+      username: string;
+      password: string;
+      captcha: string;
+      uuid: string;
+    }) {
       try {
-        const res: Res = await axios.post("/api/login", params);
+        const res: Res = await axios.post('/api/auth/login', params, {
+          headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+          },
+        });
         return res;
       } catch (err) {
-        message.error("网络错误，请重试");
+        message.error('网络错误，请重试');
       }
       return;
     },
@@ -69,11 +77,11 @@ export default {
       try {
         // 同 dispatch.app.reducerLogout();
 
-        dispatch({ type: "app/reducerLogout", payload: null });
-        sessionStorage.removeItem("userinfo");
-        return "success";
+        dispatch({ type: 'app/reducerLogout', payload: null });
+        sessionStorage.removeItem('userinfo');
+        return 'success';
       } catch (err) {
-        message.error("网络错误，请重试");
+        message.error('网络错误，请重试');
       }
       return;
     },
@@ -83,16 +91,14 @@ export default {
      * **/
     async setUserInfo(params: UserInfo) {
       dispatch.app.reducerUserInfo(params);
-      return "success";
+      return 'success';
     },
 
     /** 修改了角色/菜单/权限信息后需要更新用户的roles,menus,powers数据 **/
-    async updateUserInfo(
-      rootState?: RootState
-    ): Promise<any> {
+    async updateUserInfo(rootState?: RootState): Promise<any> {
       /** 2.重新查询角色信息 **/
       // const userinfo: UserInfo = rootState.app.userinfo;
-      const userinfo = {}
+      const userinfo = {};
 
       const res2: Res | undefined = await dispatch.sys.getRoleById({
         id: userinfo.roles.map((item) => item.id),
@@ -103,13 +109,13 @@ export default {
       }
 
       const roles: Role[] = res2.data.filter(
-        (item: Role) => item.conditions === 1
+        (item: Role) => item.conditions === 1,
       );
 
       /** 3.根据菜单id 获取菜单信息 **/
       const menuAndPowers = roles.reduce(
         (a, b) => [...a, ...b.menuAndPowers],
-        [] as MenuAndPower[]
+        [] as MenuAndPower[],
       );
       const res3: Res | undefined = await dispatch.sys.getMenusById({
         id: Array.from(new Set(menuAndPowers.map((item) => item.menuId))),
@@ -119,15 +125,15 @@ export default {
         return res3;
       }
       const menus: Menu[] = res3.data.filter(
-        (item: Menu) => item.conditions === 1
+        (item: Menu) => item.conditions === 1,
       );
 
       /** 4.根据权限id，获取权限信息 **/
       const res4: Res | undefined = await dispatch.sys.getPowerById({
         id: Array.from(
           new Set(
-            menuAndPowers.reduce((a, b) => [...a, ...b.powers], [] as number[])
-          )
+            menuAndPowers.reduce((a, b) => [...a, ...b.powers], [] as number[]),
+          ),
         ),
       });
       if (!res4 || res4.status !== 200) {
@@ -135,7 +141,7 @@ export default {
         return res4;
       }
       const powers: Power[] = res4.data.filter(
-        (item: Power) => item.conditions === 1
+        (item: Power) => item.conditions === 1,
       );
       this.setUserInfo({
         ...userinfo,

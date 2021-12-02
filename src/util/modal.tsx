@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Modal, ConfigProvider } from "antd";
 import zhCN from "antd/lib/locale/zh_CN";
-const IS_REACT_16 = !!ReactDOM.createPortal;
 
 class Mod extends React.PureComponent {
   static defaultProps = {
@@ -61,12 +60,10 @@ function modal(config) {
         destroy(...args);
       },
     };
-    if (IS_REACT_16) {
-      render(currentConfig);
-    } else {
-      destroy(...args);
-    }
+
+    destroy(...args);
   }
+
   function update(newConfig) {
     currentConfig = {
       ...currentConfig,

@@ -9,9 +9,9 @@ import tools from "@/util/tools";
 // ==================
 // 所需的所有组件
 // ==================
-import Vcode from "react-vcode";
 import { Form, Input, Button, Checkbox, message } from "antd";
 import { UserOutlined, KeyOutlined } from "@ant-design/icons";
+import Vcode from "@/components/Vcode";
 import logoUrl from "@/assets/logo.png";
 
 // ==================
@@ -44,32 +44,28 @@ import "./index.less";
 // ==================
 function Login(props: Props): JSX.Element {
   const dispatch = useDispatch<Dispatch>();
-  const p = useSelector((state: RootState) => state.app.powersCode);
-
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false); // 是否正在登录中
   const [rememberPassword, setRememberPassword] = useState(false); // 是否记住密码
-  const [codeValue, setCodeValue] = useState("0000"); // 当前验证码的值
-  const [show, setShow] = useState(false); // 加载完毕时触发动画
+  let uuid = ''
 
   // 进入登陆页时，判断之前是否保存了用户名和密码
   useEffect(() => {
-    const userLoginStorage = localStorage.getItem("userLogin");
-    if (userLoginStorage) {
-      const userLoginObj = JSON.parse(userLoginStorage);
+    const loginInfoStorage = localStorage.getItem("loginInfo");
+    if (loginInfoStorage) {
+      const loginInfo = JSON.parse(loginInfoStorage);
       setRememberPassword(true);
 
       form.setFieldsValue({
-        username: userLoginObj.username,
-        password: tools.uncompile(userLoginObj.password),
+        username: loginInfo.username,
+        password: tools.uncompile(loginInfo.password),
       });
     }
-    if (!userLoginStorage) {
+    if (!loginInfoStorage) {
       document.getElementById("username")?.focus();
     } else {
       document.getElementById("vcode")?.focus();
     }
-    setShow(true);
   }, [form]);
 
   /**
@@ -80,17 +76,14 @@ function Login(props: Props): JSX.Element {
    * 3.通过角色信息获取其拥有的所有权限信息
    * **/
   const onLogin = useCallback(
-    async (username, password) => {
+    async (creds) => {
       let userBasicInfo: UserBasicInfo | null = null;
       let roles: Role[] = [];
       let menus: Menu[] = [];
       let powers: Power[] = [];
 
       /** 1.登录 （返回信息中有该用户拥有的角色id） **/
-      const res1: Res | undefined = await dispatch.app.onLogin({
-        username,
-        password,
-      });
+      const res1: Res | undefined = await dispatch.app.onLogin(creds);
       if (!res1 || res1.status !== 200 || !res1.data) {
         // 登录失败
         return res1;
@@ -145,19 +138,19 @@ function Login(props: Props): JSX.Element {
     try {
       const values = await form.validateFields();
       setLoading(true);
-      const res = await onLogin(values.username, values.password);
+      const res = await onLogin({ ...values, uuid });
       if (res && res.status === 200) {
         message.success("登录成功");
         if (rememberPassword) {
           localStorage.setItem(
-            "userLogin",
+            "loginInfo",
             JSON.stringify({
               username: values.username,
               password: tools.compile(values.password), // 密码简单加密一下再存到localStorage
             })
           ); // 保存用户名和密码
         } else {
-          localStorage.removeItem("userLogin");
+          localStorage.removeItem("loginInfo");
         }
         /** 将这些信息加密后存入sessionStorage,并存入store **/
         sessionStorage.setItem(
@@ -180,13 +173,6 @@ function Login(props: Props): JSX.Element {
     setRememberPassword(e.target.checked);
   };
 
-  // 验证码改变时触发
-  const onVcodeChange = (code: string): void => {
-    form.setFieldsValue({
-      vcode: code, // 开发模式自动赋值验证码，正式环境，这里应该赋值''
-    });
-    setCodeValue(code);
-  };
 
   return (
     <div className="page-login">
@@ -233,31 +219,14 @@ function Login(props: Props): JSX.Element {
             </Form.Item>
             <Form.Item>
               <Form.Item
-                name="vcode"
+                name="captcha"
                 noStyle
                 rules={[
-                  (): any => ({
-                    validator: (rule: any, value: string): Promise<any> => {
-                      const v = tools.trim(value);
-                      if (v) {
-                        if (v.length > 4) {
-                          return Promise.reject("验证码为4位字符");
-                        } else if (
-                          v.toLowerCase() !== codeValue.toLowerCase()
-                        ) {
-                          return Promise.reject("验证码错误");
-                        } else {
-                          return Promise.resolve();
-                        }
-                      } else {
-                        return Promise.reject("请输入验证码");
-                      }
-                    },
-                  }),
+                  { required: true, message: "请输入验证码" },
                 ]}
               >
                 <Input
-                  style={{ width: "200px" }}
+                  style={{ width: 240, marginRight: 4, float: 'left' }}
                   size="large"
                   id="vcode" // 为了获取焦点
                   placeholder="请输入验证码"
@@ -266,12 +235,10 @@ function Login(props: Props): JSX.Element {
               </Form.Item>
               <Vcode
                 height={40}
-                width={150}
-                onChange={onVcodeChange}
-                className="vcode"
-                style={{ color: "#f00" }}
-                options={{
-                  lines: 16,
+                width={108}
+                onClick={(res) => {
+                  console.log(res, 'res')
+                  uuid = res.uuid
                 }}
               />
             </Form.Item>
